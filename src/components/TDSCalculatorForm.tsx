@@ -118,16 +118,21 @@ const theme = createTheme({
   },
 });
 
+// Update mobile styles
 const StyledContainer = styled(Container)(({ theme }) => ({
-  [theme.breakpoints.down('sm')]: {
-    padding: theme.spacing(2),
-  },
   backgroundColor: '#f5f8fa', 
   backgroundImage: 'linear-gradient(to bottom, #f5f8fa, #e8f1f8)',
   borderRadius: '12px',
   minHeight: '100vh',
   paddingTop: theme.spacing(4),
   paddingBottom: theme.spacing(6),
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(2),
+    borderRadius: 0,
+    minHeight: '100vh',
+    width: '100%',
+    maxWidth: '100%',
+  },
 }));
 
 const HeaderPaper = styled(Paper)(({ theme }) => ({
@@ -147,13 +152,21 @@ const HeaderPaper = styled(Paper)(({ theme }) => ({
     left: 0,
     background: 'radial-gradient(circle at top right, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%)',
     pointerEvents: 'none',
-  }
+  },
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(2.5),
+    borderRadius: '8px 8px 0 0',
+  },
 }));
 
-const ContentPaper = styled(Paper)(() => ({
+const ContentPaper = styled(Paper)(({ theme }) => ({
   borderRadius: '0 0 12px 12px',
   paddingTop: '24px',
   paddingBottom: '32px',
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(2),
+    borderRadius: '0 0 8px 8px',
+  },
 }));
 
 const OptionBox = styled(Box)(({ theme }) => ({
@@ -166,17 +179,17 @@ const OptionBox = styled(Box)(({ theme }) => ({
     backgroundColor: alpha(theme.palette.primary.main, 0.08),
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.05)',
   },
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(2),
+    borderRadius: 8,
+  },
 }));
 
-// Steps for the wizard
+// Steps for the wizard - removed Property & Other Expenses step
 const steps = [
   {
     label: 'Mortgage Details',
     description: 'Enter information about your mortgage.'
-  },
-  {
-    label: 'Property & Other Expenses',
-    description: 'Enter any other property-related expenses (if applicable).'
   },
   {
     label: 'Other Debts',
@@ -193,12 +206,9 @@ const steps = [
 ];
 
 export const TDSCalculatorForm: React.FC = () => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { 
     financialData, 
     result, 
-    // Remove the unused variable warning
-    // hasCalculated, 
     handleInputChange, 
     calculate, 
     resetForm 
@@ -208,10 +218,6 @@ export const TDSCalculatorForm: React.FC = () => {
   const [showMoreInfo, setShowMoreInfo] = useState(false);
   
   // State for optional fields
-  const [hasPropertyTax, setHasPropertyTax] = useState(false);
-  const [hasCondoFees, setHasCondoFees] = useState(false);
-  const [hasHomeInsurance, setHasHomeInsurance] = useState(false);
-  const [hasHeatingCosts, setHasHeatingCosts] = useState(false);
   const [hasCarPayments, setHasCarPayments] = useState(false);
   const [hasStudentLoans, setHasStudentLoans] = useState(false);
   const [hasCreditCardPayments, setHasCreditCardPayments] = useState(false);
@@ -244,18 +250,6 @@ export const TDSCalculatorForm: React.FC = () => {
     }
     
     switch(field) {
-      case 'propertyTax':
-        setHasPropertyTax(checked);
-        break;
-      case 'condoFees':
-        setHasCondoFees(checked);
-        break;
-      case 'homeInsurance':
-        setHasHomeInsurance(checked);
-        break;
-      case 'heatingCosts':
-        setHasHeatingCosts(checked);
-        break;
       case 'carPayments':
         setHasCarPayments(checked);
         break;
@@ -322,164 +316,7 @@ export const TDSCalculatorForm: React.FC = () => {
           </Box>
         );
       
-      case 1: // Property & Other Expenses
-        return (
-          <Box sx={{ mt: 3 }}>
-            <Stack spacing={3}>
-              <Typography 
-                variant="body2" 
-                color="text.secondary" 
-                sx={{ 
-                  fontStyle: 'italic', 
-                  mb: 1,
-                  padding: 2,
-                  backgroundColor: alpha(theme.palette.info.main, 0.05),
-                  borderRadius: 2,
-                  borderLeft: `4px solid ${theme.palette.info.main}`
-                }}
-              >
-                These expenses are optional. Only check the ones that apply to you.
-              </Typography>
-              
-              <OptionBox>
-                <FormControlLabel
-                  control={
-                    <Checkbox 
-                      checked={hasPropertyTax}
-                      onChange={(e) => handleOptionalFieldChange('propertyTax', e.target.checked)}
-                      sx={{ color: theme.palette.primary.main }}
-                      icon={<CheckCircleOutlineIcon sx={{ opacity: 0.6 }} />}
-                      checkedIcon={<CheckCircleOutlineIcon />}
-                    />
-                  }
-                  label={
-                    <Typography sx={{ fontWeight: 500 }}>
-                      I pay property tax
-                    </Typography>
-                  }
-                />
-                
-                {hasPropertyTax && (
-                  <Fade in={hasPropertyTax}>
-                    <Box sx={{ mt: 1, ml: isMobile ? 0 : 4 }}>
-                      <CurrencyInput
-                        label="Property Tax"
-                        value={financialData.propertyTax}
-                        onChange={(value) => handleInputChange('propertyTax', value)}
-                        tooltipText="Enter your property tax amount"
-                        helperText="The calculator will convert to monthly if you enter yearly"
-                        allowPeriodToggle={true}
-                      />
-                    </Box>
-                  </Fade>
-                )}
-              </OptionBox>
-              
-              <OptionBox>
-                <FormControlLabel
-                  control={
-                    <Checkbox 
-                      checked={hasCondoFees}
-                      onChange={(e) => handleOptionalFieldChange('condoFees', e.target.checked)}
-                      sx={{ color: theme.palette.primary.main }}
-                      icon={<CheckCircleOutlineIcon sx={{ opacity: 0.6 }} />}
-                      checkedIcon={<CheckCircleOutlineIcon />}
-                    />
-                  }
-                  label={
-                    <Typography sx={{ fontWeight: 500 }}>
-                      I pay condo/strata fees
-                    </Typography>
-                  }
-                />
-                
-                {hasCondoFees && (
-                  <Fade in={hasCondoFees}>
-                    <Box sx={{ mt: 1, ml: isMobile ? 0 : 4 }}>
-                      <CurrencyInput
-                        label="Condo/Strata Fees"
-                        value={financialData.condoFees}
-                        onChange={(value) => handleInputChange('condoFees', value)}
-                        tooltipText="Your maintenance fees for your property"
-                        allowPeriodToggle={true}
-                      />
-                    </Box>
-                  </Fade>
-                )}
-              </OptionBox>
-              
-              <OptionBox>
-                <FormControlLabel
-                  control={
-                    <Checkbox 
-                      checked={hasHomeInsurance}
-                      onChange={(e) => handleOptionalFieldChange('homeInsurance', e.target.checked)}
-                      sx={{ color: theme.palette.primary.main }}
-                      icon={<CheckCircleOutlineIcon sx={{ opacity: 0.6 }} />}
-                      checkedIcon={<CheckCircleOutlineIcon />}
-                    />
-                  }
-                  label={
-                    <Typography sx={{ fontWeight: 500 }}>
-                      I pay home insurance
-                    </Typography>
-                  }
-                />
-                
-                {hasHomeInsurance && (
-                  <Fade in={hasHomeInsurance}>
-                    <Box sx={{ mt: 1, ml: isMobile ? 0 : 4 }}>
-                      <CurrencyInput
-                        label="Home Insurance"
-                        value={financialData.homeInsurance}
-                        onChange={(value) => handleInputChange('homeInsurance', value)}
-                        tooltipText="Your home insurance premium"
-                        helperText="The calculator will convert to monthly if you enter yearly"
-                        allowPeriodToggle={true}
-                      />
-                    </Box>
-                  </Fade>
-                )}
-              </OptionBox>
-              
-              <OptionBox>
-                <FormControlLabel
-                  control={
-                    <Checkbox 
-                      checked={hasHeatingCosts}
-                      onChange={(e) => handleOptionalFieldChange('heatingCosts', e.target.checked)}
-                      sx={{ color: theme.palette.primary.main }}
-                      icon={<CheckCircleOutlineIcon sx={{ opacity: 0.6 }} />}
-                      checkedIcon={<CheckCircleOutlineIcon />}
-                    />
-                  }
-                  label={
-                    <Typography sx={{ fontWeight: 500 }}>
-                      I pay for heating
-                    </Typography>
-                  }
-                />
-                
-                {hasHeatingCosts && (
-                  <Fade in={hasHeatingCosts}>
-                    <Box sx={{ mt: 1, ml: isMobile ? 0 : 4 }}>
-                      <CurrencyInput
-                        label="Monthly Heating Costs"
-                        value={financialData.heatingCosts}
-                        onChange={(value) => handleInputChange('heatingCosts', value)}
-                        tooltipText="Average monthly heating costs"
-                        helperText="Estimate your average monthly heating costs"
-                        allowPeriodToggle={true}
-                      />
-                    </Box>
-                  </Fade>
-                )}
-              </OptionBox>
-            </Stack>
-          </Box>
-        );
-      
-      case 2: // Other Debts
+      case 1: // Other Debts (was index 2 before)
         return (
           <Box sx={{ mt: 3 }}>
             <Stack spacing={3}>
@@ -634,7 +471,7 @@ export const TDSCalculatorForm: React.FC = () => {
           </Box>
         );
       
-      case 3: // Income
+      case 2: // Income (was index 3 before)
         return (
           <Box sx={{ mt: 3 }}>
             <Stack spacing={4}>
@@ -677,7 +514,7 @@ export const TDSCalculatorForm: React.FC = () => {
           </Box>
         );
       
-      case 4: // Results
+      case 3: // Results (was index 4 before)
         return result && (
           <Fade in={true} timeout={800}>
             <Box>
@@ -695,10 +532,19 @@ export const TDSCalculatorForm: React.FC = () => {
     <ThemeProvider theme={theme}>
       <StyledContainer maxWidth="md">
         <HeaderPaper elevation={3} sx={{ mb: 0 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-            <AccountBalanceIcon sx={{ fontSize: 36, mr: 2 }} />
+          <Box sx={{ 
+            display: 'flex', 
+            mb: 1,
+            flexDirection: isMobile ? 'column' : 'row',
+            alignItems: isMobile ? 'flex-start' : 'center',
+          }}>
+            <AccountBalanceIcon sx={{ 
+              fontSize: isMobile ? 32 : 36, 
+              mr: isMobile ? 0 : 2,
+              mb: isMobile ? 1 : 0 
+            }} />
             <Typography variant="h4" component="h1" sx={{ 
-              fontSize: { xs: '1.5rem', sm: '2.125rem' },
+              fontSize: { xs: '1.3rem', sm: '2.125rem' },
               fontWeight: 600,
               textShadow: '0 1px 2px rgba(0,0,0,0.2)'
             }}>
@@ -709,28 +555,43 @@ export const TDSCalculatorForm: React.FC = () => {
             mb: 3, 
             opacity: 0.9, 
             fontWeight: 500,
-            letterSpacing: '0.5px'
+            letterSpacing: '0.5px',
+            fontSize: { xs: '1.1rem', sm: '1.5rem' },
           }}>
             TDS Calculator
           </Typography>
-          <Typography variant="body1" paragraph sx={{ maxWidth: '90%' }}>
+          <Typography variant="body1" paragraph sx={{ 
+            maxWidth: '100%',
+            fontSize: { xs: '0.9rem', sm: '1rem' },
+          }}>
             This calculator helps determine if you qualify for the Canada Greener Homes Loan
             based on the CMHC 39/44 rule. Enter your financial information below.
           </Typography>
           <Divider sx={{ my: 2, bgcolor: 'rgba(255,255,255,0.3)' }} />
-          <Typography variant="body2" sx={{ opacity: 0.9 }} paragraph>
+          <Typography variant="body2" sx={{ 
+            opacity: 0.9,
+            fontSize: { xs: '0.8rem', sm: '0.875rem' },
+          }} paragraph>
             All calculations are performed in your browser. No data is sent to any server.
           </Typography>
         </HeaderPaper>
 
         <ContentPaper elevation={3} sx={{ p: { xs: 2.5, sm: 3.5 } }}>
-          <Stepper activeStep={activeStep} orientation="vertical">
+          <Stepper 
+            activeStep={activeStep} 
+            orientation={isMobile ? "vertical" : "vertical"}
+            sx={{
+              '.MuiStepConnector-line': {
+                minHeight: isMobile ? 20 : 40
+              }
+            }}
+          >
             {steps.map((step, index) => (
               <Step key={step.label}>
                 <StepLabel>
                   <Typography sx={{ 
                     fontWeight: 600, 
-                    fontSize: { xs: '1rem', sm: '1.1rem' },
+                    fontSize: { xs: '0.95rem', sm: '1.1rem' },
                     color: activeStep === index ? theme.palette.primary.main : 'inherit'
                   }}>
                     {step.label}
@@ -742,7 +603,7 @@ export const TDSCalculatorForm: React.FC = () => {
                     color="text.secondary" 
                     sx={{ 
                       mb: 2,
-                      fontSize: '0.95rem',
+                      fontSize: { xs: '0.85rem', sm: '0.95rem' },
                       borderLeft: `3px solid ${theme.palette.primary.light}`,
                       pl: 2,
                       py: 1
@@ -766,11 +627,11 @@ export const TDSCalculatorForm: React.FC = () => {
                       onClick={handleNext}
                       disableElevation
                       sx={{ 
-                        fontSize: '1rem', 
-                        py: 1.5, 
+                        fontSize: { xs: '0.9rem', sm: '1rem' }, 
+                        py: { xs: 1.2, sm: 1.5 }, 
                         width: { xs: '100%', sm: 'auto' },
                         order: { xs: 1, sm: 2 },
-                        px: 4,
+                        px: { xs: 3, sm: 4 },
                         display: 'flex',
                         alignItems: 'center',
                         gap: 1
@@ -793,7 +654,8 @@ export const TDSCalculatorForm: React.FC = () => {
                           order: { xs: 2, sm: 1 },
                           display: 'flex',
                           alignItems: 'center',
-                          gap: 1
+                          gap: 1,
+                          fontSize: { xs: '0.9rem', sm: '1rem' },
                         }}
                         startIcon={<ArrowBackIcon />}
                       >
@@ -813,11 +675,12 @@ export const TDSCalculatorForm: React.FC = () => {
                 variant="outlined" 
                 fullWidth 
                 sx={{ 
-                  py: 1.5,
+                  py: { xs: 1.2, sm: 1.5 },
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  gap: 1
+                  gap: 1,
+                  fontSize: { xs: '0.9rem', sm: '1rem' },
                 }}
                 startIcon={<RestartAltIcon />}
               >
