@@ -2,7 +2,7 @@
   "name": "tds-calculator",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://mikuichikamikasa.github.io/tds-calculator",
+  "homepage": "https://mikuichikamikasa.github.io/finance_calculator",
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
