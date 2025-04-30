@@ -1,25 +1,35 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
+import { TDSCalculatorForm } from './components/TDSCalculatorForm';
+
+// Create a theme instance
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#2E5984', // Canadian blue
+    },
+    secondary: {
+      main: '#D80621', // Canadian red
+    },
+    background: {
+      default: '#f5f5f5',
+    },
+  },
+  typography: {
+    fontFamily: [
+      'Roboto',
+      'Arial',
+      'sans-serif',
+    ].join(','),
+  },
+});
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <TDSCalculatorForm />
+    </ThemeProvider>
   );
 }
 

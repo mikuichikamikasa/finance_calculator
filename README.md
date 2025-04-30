@@ -1,46 +1,77 @@
-# Getting Started with Create React App
+# Canada Greener Homes Loan TDS Calculator
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A client-facing Total Debt Service (TDS) calculator that helps Canadians determine if they qualify for the Canada Greener Homes Loan based on the CMHC 39/44 rule.
 
-## Available Scripts
+## Live Demo
 
-In the project directory, you can run:
+Once deployed, the calculator will be available online.
 
-### `npm start`
+## Features
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- Calculate your Total Debt Service (TDS) ratio based on CMHC's 44% rule
+- Determine eligibility for the Canada Greener Homes Loan
+- Get specific feedback on shortfall if you don't qualify
+- Visual representation of your debt load compared to the maximum allowed
+- All calculations performed client-side with no data sent to any server
+- Responsive design works on desktop and mobile devices
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## What Is TDS?
 
-### `npm test`
+The Total Debt Service (TDS) ratio is a calculation used by mortgage lenders to determine if you can afford your housing costs plus other debts. For the Canada Greener Homes Loan:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- TDS = (All monthly debt obligations / Gross monthly income) * 100
+- Your TDS must be 44% or less to qualify
 
-### `npm run build`
+## How To Use
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. Enter your mortgage payment details (mortgage payment, property tax, heating, condo fees)
+2. Add any other property-related expenses (home insurance)
+3. Include other monthly debt payments (car loans, student loans, credit cards, etc.)
+4. Enter all sources of gross monthly income (yours, spouse, rental income, etc.)
+5. Click "Calculate TDS Ratio" to see if you qualify
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Privacy
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+This calculator runs entirely in your browser. No personal or financial information is sent to any server, ensuring your data remains private.
 
-### `npm run eject`
+## Development
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+This project was built with:
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- React
+- TypeScript
+- Material UI
+- Chart.js
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### Running Locally
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+```bash
+# Clone the repository
+git clone https://github.com/[username]/tds-calculator.git
 
-## Learn More
+# Navigate to the project directory
+cd tds-calculator
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+# Install dependencies
+npm install
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+# Start the development server
+npm start
+```
+
+### Deployment
+
+This project is configured to deploy to GitHub Pages:
+
+```bash
+# Deploy to GitHub Pages
+npm run deploy
+```
+
+## License
+
+This project is open source and available under the MIT License.
+
+## Disclaimer
+
+This calculator is provided for informational purposes only. While we strive for accuracy, you should consult with a mortgage professional for a final determination of your eligibility for the Canada Greener Homes Loan.
