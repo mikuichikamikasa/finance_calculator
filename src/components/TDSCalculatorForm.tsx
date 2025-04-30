@@ -67,6 +67,11 @@ export const TDSCalculatorForm: React.FC = () => {
   const [hasPropertyTax, setHasPropertyTax] = useState(false);
   const [hasCondoFees, setHasCondoFees] = useState(false);
   const [hasHomeInsurance, setHasHomeInsurance] = useState(false);
+  const [hasHeatingCosts, setHasHeatingCosts] = useState(false);
+  const [hasCarPayments, setHasCarPayments] = useState(false);
+  const [hasStudentLoans, setHasStudentLoans] = useState(false);
+  const [hasCreditCardPayments, setHasCreditCardPayments] = useState(false);
+  const [hasOtherLoans, setHasOtherLoans] = useState(false);
 
   const handleNext = () => {
     if (activeStep === steps.length - 2) {
@@ -100,6 +105,21 @@ export const TDSCalculatorForm: React.FC = () => {
         break;
       case 'homeInsurance':
         setHasHomeInsurance(checked);
+        break;
+      case 'heatingCosts':
+        setHasHeatingCosts(checked);
+        break;
+      case 'carPayments':
+        setHasCarPayments(checked);
+        break;
+      case 'studentLoans':
+        setHasStudentLoans(checked);
+        break;
+      case 'creditCardPayments':
+        setHasCreditCardPayments(checked);
+        break;
+      case 'otherLoans':
+        setHasOtherLoans(checked);
         break;
     }
   };
@@ -222,14 +242,28 @@ export const TDSCalculatorForm: React.FC = () => {
                 )}
               </Box>
               
-              <CurrencyInput
-                label="Monthly Heating Costs"
-                value={financialData.heatingCosts}
-                onChange={(value) => handleInputChange('heatingCosts', value)}
-                tooltipText="Average monthly heating costs"
-                helperText="Estimate your average monthly heating costs"
-                allowPeriodToggle={true}
-              />
+              <Box>
+                <FormControlLabel
+                  control={
+                    <Checkbox 
+                      checked={hasHeatingCosts}
+                      onChange={(e) => handleOptionalFieldChange('heatingCosts', e.target.checked)}
+                    />
+                  }
+                  label="I pay for heating"
+                />
+                
+                {hasHeatingCosts && (
+                  <CurrencyInput
+                    label="Monthly Heating Costs"
+                    value={financialData.heatingCosts}
+                    onChange={(value) => handleInputChange('heatingCosts', value)}
+                    tooltipText="Average monthly heating costs"
+                    helperText="Estimate your average monthly heating costs"
+                    allowPeriodToggle={true}
+                  />
+                )}
+              </Box>
             </Stack>
           </Box>
         );
@@ -238,38 +272,98 @@ export const TDSCalculatorForm: React.FC = () => {
         return (
           <Box sx={{ mt: 2 }}>
             <Stack spacing={3}>
-              <CurrencyInput
-                label="Car Payments"
-                value={financialData.carPayments}
-                onChange={(value) => handleInputChange('carPayments', value)}
-                helperText="Total monthly payments for all vehicles"
-                tooltipText="Combined monthly payments for all car loans or leases"
-              />
+              <Typography variant="body2" color="text.secondary">
+                These debt payments are optional. Only check the ones that apply to you.
+              </Typography>
               
-              <CurrencyInput
-                label="Student Loans"
-                value={financialData.studentLoans}
-                onChange={(value) => handleInputChange('studentLoans', value)}
-                tooltipText="Student loan payments"
-                allowPeriodToggle={true}
-              />
+              <Box>
+                <FormControlLabel
+                  control={
+                    <Checkbox 
+                      checked={hasCarPayments}
+                      onChange={(e) => handleOptionalFieldChange('carPayments', e.target.checked)}
+                    />
+                  }
+                  label="I have car payments"
+                />
+                
+                {hasCarPayments && (
+                  <CurrencyInput
+                    label="Car Payments"
+                    value={financialData.carPayments}
+                    onChange={(value) => handleInputChange('carPayments', value)}
+                    helperText="Total monthly payments for all vehicles"
+                    tooltipText="Combined monthly payments for all car loans or leases"
+                  />
+                )}
+              </Box>
               
-              <CurrencyInput
-                label="Credit Card Payments"
-                value={financialData.creditCardPayments}
-                onChange={(value) => handleInputChange('creditCardPayments', value)}
-                helperText="Minimum monthly payments"
-                tooltipText="Combined minimum monthly payments for all credit cards"
-              />
+              <Box>
+                <FormControlLabel
+                  control={
+                    <Checkbox 
+                      checked={hasStudentLoans}
+                      onChange={(e) => handleOptionalFieldChange('studentLoans', e.target.checked)}
+                    />
+                  }
+                  label="I have student loans"
+                />
+                
+                {hasStudentLoans && (
+                  <CurrencyInput
+                    label="Student Loans"
+                    value={financialData.studentLoans}
+                    onChange={(value) => handleInputChange('studentLoans', value)}
+                    tooltipText="Student loan payments"
+                    allowPeriodToggle={true}
+                  />
+                )}
+              </Box>
               
-              <CurrencyInput
-                label="Other Loans"
-                value={financialData.otherLoans}
-                onChange={(value) => handleInputChange('otherLoans', value)}
-                helperText="Personal loans, lines of credit, etc."
-                tooltipText="Monthly payments for any other loans or debts"
-                allowPeriodToggle={true}
-              />
+              <Box>
+                <FormControlLabel
+                  control={
+                    <Checkbox 
+                      checked={hasCreditCardPayments}
+                      onChange={(e) => handleOptionalFieldChange('creditCardPayments', e.target.checked)}
+                    />
+                  }
+                  label="I have credit card payments"
+                />
+                
+                {hasCreditCardPayments && (
+                  <CurrencyInput
+                    label="Credit Card Payments"
+                    value={financialData.creditCardPayments}
+                    onChange={(value) => handleInputChange('creditCardPayments', value)}
+                    helperText="Minimum monthly payments"
+                    tooltipText="Combined minimum monthly payments for all credit cards"
+                  />
+                )}
+              </Box>
+              
+              <Box>
+                <FormControlLabel
+                  control={
+                    <Checkbox 
+                      checked={hasOtherLoans}
+                      onChange={(e) => handleOptionalFieldChange('otherLoans', e.target.checked)}
+                    />
+                  }
+                  label="I have other loans"
+                />
+                
+                {hasOtherLoans && (
+                  <CurrencyInput
+                    label="Other Loans"
+                    value={financialData.otherLoans}
+                    onChange={(value) => handleInputChange('otherLoans', value)}
+                    helperText="Personal loans, lines of credit, etc."
+                    tooltipText="Monthly payments for any other loans or debts"
+                    allowPeriodToggle={true}
+                  />
+                )}
+              </Box>
             </Stack>
           </Box>
         );
