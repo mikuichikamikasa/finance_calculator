@@ -2,6 +2,12 @@
 
 A client-facing Total Debt Service (TDS) calculator that helps Canadians determine if they qualify for the Canada Greener Homes Loan based on the CMHC 39/44 rule.
 
+## Branches
+
+This repository contains the following branches:
+- `main` - Production-ready code
+- `development` - Active development branch
+
 ## Live Demo
 
 Once deployed, the calculator will be available online.
@@ -14,6 +20,8 @@ Once deployed, the calculator will be available online.
 - Visual representation of your debt load compared to the maximum allowed
 - All calculations performed client-side with no data sent to any server
 - Responsive design works on desktop and mobile devices
+- Enter expenses as yearly or monthly amounts with automatic conversion
+- Optional property-related expenses (property tax, condo fees, home insurance)
 
 ## What Is TDS?
 
@@ -24,11 +32,11 @@ The Total Debt Service (TDS) ratio is a calculation used by mortgage lenders to 
 
 ## How To Use
 
-1. Enter your mortgage payment details (mortgage payment, property tax, heating, condo fees)
-2. Add any other property-related expenses (home insurance)
+1. Enter your mortgage payment details (mortgage payment, remaining balance)
+2. Add any applicable property-related expenses (property tax, heating, condo fees, home insurance)
 3. Include other monthly debt payments (car loans, student loans, credit cards, etc.)
-4. Enter all sources of gross monthly income (yours, spouse, rental income, etc.)
-5. Click "Calculate TDS Ratio" to see if you qualify
+4. Enter all sources of monthly income (yours, spouse, rental income, etc.)
+5. Click "Calculate" to see if you qualify
 
 ## Privacy
 
@@ -47,7 +55,7 @@ This project was built with:
 
 ```bash
 # Clone the repository
-git clone https://github.com/[username]/tds-calculator.git
+git clone https://github.com/mikuichikamikasa/finance_calculator.git
 
 # Navigate to the project directory
 cd tds-calculator
