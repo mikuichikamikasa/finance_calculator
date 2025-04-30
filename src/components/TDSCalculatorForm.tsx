@@ -13,16 +13,114 @@ import {
   StepContent,
   styled,
   Checkbox,
-  FormControlLabel
+  FormControlLabel,
+  ThemeProvider,
+  createTheme,
+  useMediaQuery
 } from '@mui/material';
 import { CurrencyInput } from './CurrencyInput';
 import { ResultsDisplay } from './ResultsDisplay';
 import { useTDSCalculator } from '../hooks/useTDSCalculator';
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+
+// Create a custom theme with blue colors
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#1976d2',
+      light: '#4791db',
+      dark: '#115293',
+    },
+    secondary: {
+      main: '#0a4d82',
+      light: '#3b6d9b',
+      dark: '#07345a',
+    },
+    background: {
+      default: '#f5f8fa',
+      paper: '#ffffff',
+    },
+  },
+  typography: {
+    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+    h4: {
+      fontWeight: 600,
+    },
+    body1: {
+      lineHeight: 1.6,
+    },
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          borderRadius: 8,
+          textTransform: 'none',
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+          '&:hover': {
+            boxShadow: '0 6px 10px rgba(0, 0, 0, 0.15)',
+          },
+        },
+        contained: {
+          background: 'linear-gradient(45deg, #1976d2 30%, #2196f3 90%)',
+        },
+      },
+    },
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          borderRadius: 12,
+          boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)',
+        },
+      },
+    },
+    MuiStepLabel: {
+      styleOverrides: {
+        root: {
+          '&.Mui-active': {
+            color: '#1976d2',
+          },
+          '&.Mui-completed': {
+            color: '#4caf50',
+          },
+        },
+      },
+    },
+  },
+});
 
 const StyledContainer = styled(Container)(({ theme }) => ({
   [theme.breakpoints.down('sm')]: {
     padding: theme.spacing(2),
   },
+  backgroundColor: '#f5f8fa',
+  borderRadius: '12px',
+  minHeight: '100vh',
+}));
+
+const HeaderPaper = styled(Paper)(({ theme }) => ({
+  background: 'linear-gradient(135deg, #1976d2 0%, #0a4d82 100%)',
+  color: 'white',
+  borderRadius: '12px 12px 0 0',
+  marginBottom: 0,
+  padding: theme.spacing(3),
+  position: 'relative',
+  overflow: 'hidden',
+  '&::after': {
+    content: '""',
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    background: 'radial-gradient(circle at top right, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%)',
+    pointerEvents: 'none',
+  }
+}));
+
+const ContentPaper = styled(Paper)(() => ({
+  borderRadius: '0 0 12px 12px',
+  paddingTop: '24px',
 }));
 
 // Steps for the wizard
@@ -72,6 +170,8 @@ export const TDSCalculatorForm: React.FC = () => {
   const [hasStudentLoans, setHasStudentLoans] = useState(false);
   const [hasCreditCardPayments, setHasCreditCardPayments] = useState(false);
   const [hasOtherLoans, setHasOtherLoans] = useState(false);
+
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleNext = () => {
     if (activeStep === steps.length - 2) {
@@ -170,16 +270,17 @@ export const TDSCalculatorForm: React.FC = () => {
         return (
           <Box sx={{ mt: 2 }}>
             <Stack spacing={3}>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic', mb: 1 }}>
                 These expenses are optional. Only check the ones that apply to you.
               </Typography>
               
-              <Box>
+              <Box sx={{ p: 2, bgcolor: 'rgba(25, 118, 210, 0.05)', borderRadius: 2 }}>
                 <FormControlLabel
                   control={
                     <Checkbox 
                       checked={hasPropertyTax}
                       onChange={(e) => handleOptionalFieldChange('propertyTax', e.target.checked)}
+                      sx={{ color: theme.palette.primary.main }}
                     />
                   }
                   label="I pay property tax"
@@ -197,12 +298,13 @@ export const TDSCalculatorForm: React.FC = () => {
                 )}
               </Box>
               
-              <Box>
+              <Box sx={{ p: 2, bgcolor: 'rgba(25, 118, 210, 0.05)', borderRadius: 2 }}>
                 <FormControlLabel
                   control={
                     <Checkbox 
                       checked={hasCondoFees}
                       onChange={(e) => handleOptionalFieldChange('condoFees', e.target.checked)}
+                      sx={{ color: theme.palette.primary.main }}
                     />
                   }
                   label="I pay condo/strata fees"
@@ -219,12 +321,13 @@ export const TDSCalculatorForm: React.FC = () => {
                 )}
               </Box>
               
-              <Box>
+              <Box sx={{ p: 2, bgcolor: 'rgba(25, 118, 210, 0.05)', borderRadius: 2 }}>
                 <FormControlLabel
                   control={
                     <Checkbox 
                       checked={hasHomeInsurance}
                       onChange={(e) => handleOptionalFieldChange('homeInsurance', e.target.checked)}
+                      sx={{ color: theme.palette.primary.main }}
                     />
                   }
                   label="I pay home insurance"
@@ -242,12 +345,13 @@ export const TDSCalculatorForm: React.FC = () => {
                 )}
               </Box>
               
-              <Box>
+              <Box sx={{ p: 2, bgcolor: 'rgba(25, 118, 210, 0.05)', borderRadius: 2 }}>
                 <FormControlLabel
                   control={
                     <Checkbox 
                       checked={hasHeatingCosts}
                       onChange={(e) => handleOptionalFieldChange('heatingCosts', e.target.checked)}
+                      sx={{ color: theme.palette.primary.main }}
                     />
                   }
                   label="I pay for heating"
@@ -272,16 +376,17 @@ export const TDSCalculatorForm: React.FC = () => {
         return (
           <Box sx={{ mt: 2 }}>
             <Stack spacing={3}>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic', mb: 1 }}>
                 These debt payments are optional. Only check the ones that apply to you.
               </Typography>
               
-              <Box>
+              <Box sx={{ p: 2, bgcolor: 'rgba(25, 118, 210, 0.05)', borderRadius: 2 }}>
                 <FormControlLabel
                   control={
                     <Checkbox 
                       checked={hasCarPayments}
                       onChange={(e) => handleOptionalFieldChange('carPayments', e.target.checked)}
+                      sx={{ color: theme.palette.primary.main }}
                     />
                   }
                   label="I have car payments"
@@ -298,12 +403,13 @@ export const TDSCalculatorForm: React.FC = () => {
                 )}
               </Box>
               
-              <Box>
+              <Box sx={{ p: 2, bgcolor: 'rgba(25, 118, 210, 0.05)', borderRadius: 2 }}>
                 <FormControlLabel
                   control={
                     <Checkbox 
                       checked={hasStudentLoans}
                       onChange={(e) => handleOptionalFieldChange('studentLoans', e.target.checked)}
+                      sx={{ color: theme.palette.primary.main }}
                     />
                   }
                   label="I have student loans"
@@ -320,12 +426,13 @@ export const TDSCalculatorForm: React.FC = () => {
                 )}
               </Box>
               
-              <Box>
+              <Box sx={{ p: 2, bgcolor: 'rgba(25, 118, 210, 0.05)', borderRadius: 2 }}>
                 <FormControlLabel
                   control={
                     <Checkbox 
                       checked={hasCreditCardPayments}
                       onChange={(e) => handleOptionalFieldChange('creditCardPayments', e.target.checked)}
+                      sx={{ color: theme.palette.primary.main }}
                     />
                   }
                   label="I have credit card payments"
@@ -342,12 +449,13 @@ export const TDSCalculatorForm: React.FC = () => {
                 )}
               </Box>
               
-              <Box>
+              <Box sx={{ p: 2, bgcolor: 'rgba(25, 118, 210, 0.05)', borderRadius: 2 }}>
                 <FormControlLabel
                   control={
                     <Checkbox 
                       checked={hasOtherLoans}
                       onChange={(e) => handleOptionalFieldChange('otherLoans', e.target.checked)}
+                      sx={{ color: theme.palette.primary.main }}
                     />
                   }
                   label="I have other loans"
@@ -422,73 +530,110 @@ export const TDSCalculatorForm: React.FC = () => {
   };
 
   return (
-    <StyledContainer maxWidth="md" sx={{ py: 4 }}>
-      <Paper elevation={3} sx={{ p: { xs: 2, sm: 3 }, mb: 3 }}>
-        <Typography variant="h4" component="h1" sx={{ fontSize: { xs: '1.5rem', sm: '2.125rem' } }} gutterBottom>
-          Canada Greener Homes Loan: TDS Calculator
-        </Typography>
-        <Typography variant="body1" paragraph>
-          This calculator helps determine if you qualify for the Canada Greener Homes Loan
-          based on the CMHC 39/44 rule. Enter your financial information below.
-        </Typography>
-        <Divider sx={{ my: 2 }} />
-        <Typography variant="body2" color="text.secondary" paragraph>
-          All calculations are performed in your browser. No data is sent to any server.
-        </Typography>
-      </Paper>
+    <ThemeProvider theme={theme}>
+      <StyledContainer maxWidth="md" sx={{ py: 4 }}>
+        <HeaderPaper elevation={3} sx={{ mb: 0 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+            <AccountBalanceIcon sx={{ fontSize: 36, mr: 2 }} />
+            <Typography variant="h4" component="h1" sx={{ 
+              fontSize: { xs: '1.5rem', sm: '2.125rem' },
+              fontWeight: 600
+            }}>
+              Canada Greener Homes Loan
+            </Typography>
+          </Box>
+          <Typography variant="h5" sx={{ mb: 3, opacity: 0.9, fontWeight: 500 }}>
+            TDS Calculator
+          </Typography>
+          <Typography variant="body1" paragraph>
+            This calculator helps determine if you qualify for the Canada Greener Homes Loan
+            based on the CMHC 39/44 rule. Enter your financial information below.
+          </Typography>
+          <Divider sx={{ my: 2, bgcolor: 'rgba(255,255,255,0.3)' }} />
+          <Typography variant="body2" sx={{ opacity: 0.9 }} paragraph>
+            All calculations are performed in your browser. No data is sent to any server.
+          </Typography>
+        </HeaderPaper>
 
-      <Paper elevation={3} sx={{ p: { xs: 2, sm: 3 } }}>
-        <Stepper activeStep={activeStep} orientation="vertical">
-          {steps.map((step, index) => (
-            <Step key={step.label}>
-              <StepLabel>
-                <Typography sx={{ fontWeight: 500, fontSize: { xs: '1rem', sm: '1.1rem' } }}>
-                  {step.label}
-                </Typography>
-              </StepLabel>
-              <StepContent>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                  {step.description}
-                </Typography>
-                
-                {renderStepContent(index)}
-                
-                <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, mt: 3, gap: 2 }}>
-                  <Button
-                    variant="contained"
-                    onClick={handleNext}
+        <ContentPaper elevation={3} sx={{ p: { xs: 2, sm: 3 } }}>
+          <Stepper activeStep={activeStep} orientation="vertical">
+            {steps.map((step, index) => (
+              <Step key={step.label}>
+                <StepLabel>
+                  <Typography sx={{ 
+                    fontWeight: 600, 
+                    fontSize: { xs: '1rem', sm: '1.1rem' },
+                    color: activeStep === index ? theme.palette.primary.main : 'inherit'
+                  }}>
+                    {step.label}
+                  </Typography>
+                </StepLabel>
+                <StepContent>
+                  <Typography 
+                    variant="body2" 
+                    color="text.secondary" 
                     sx={{ 
-                      fontSize: '1rem', 
-                      py: 1.5, 
-                      width: { xs: '100%', sm: 'auto' },
-                      order: { xs: 1, sm: 2 }
+                      mb: 2,
+                      fontSize: '0.95rem',
+                      borderLeft: `3px solid ${theme.palette.primary.light}`,
+                      pl: 2,
+                      py: 1
                     }}
                   >
-                    {index === steps.length - 2 ? 'Calculate' : index === steps.length - 1 ? 'Start Over' : 'Continue'}
-                  </Button>
+                    {step.description}
+                  </Typography>
                   
-                  {index > 0 && (
+                  {renderStepContent(index)}
+                  
+                  <Box sx={{ 
+                    display: 'flex', 
+                    flexDirection: { xs: 'column', sm: 'row' }, 
+                    mt: 4, 
+                    gap: 2,
+                    borderTop: '1px solid rgba(0,0,0,0.08)',
+                    pt: 3
+                  }}>
                     <Button
-                      onClick={handleBack}
-                      sx={{ width: { xs: '100%', sm: 'auto' }, order: { xs: 2, sm: 1 } }}
+                      variant="contained"
+                      onClick={handleNext}
+                      disableElevation
+                      sx={{ 
+                        fontSize: '1rem', 
+                        py: 1.5, 
+                        width: { xs: '100%', sm: 'auto' },
+                        order: { xs: 1, sm: 2 },
+                        px: 4
+                      }}
                     >
-                      Back
+                      {index === steps.length - 2 ? 'Calculate' : index === steps.length - 1 ? 'Start Over' : 'Continue'}
                     </Button>
-                  )}
-                </Box>
-              </StepContent>
-            </Step>
-          ))}
-        </Stepper>
+                    
+                    {index > 0 && (
+                      <Button
+                        onClick={handleBack}
+                        sx={{ 
+                          width: { xs: '100%', sm: 'auto' }, 
+                          order: { xs: 2, sm: 1 },
+                        }}
+                      >
+                        Back
+                      </Button>
+                    )}
+                  </Box>
+                </StepContent>
+              </Step>
+            ))}
+          </Stepper>
 
-        {activeStep === steps.length && (
-          <Box sx={{ mt: 3 }}>
-            <Button onClick={handleReset} variant="outlined" fullWidth sx={{ py: 1.5 }}>
-              Reset & Start Again
-            </Button>
-          </Box>
-        )}
-      </Paper>
-    </StyledContainer>
+          {activeStep === steps.length && (
+            <Box sx={{ mt: 3 }}>
+              <Button onClick={handleReset} variant="outlined" fullWidth sx={{ py: 1.5 }}>
+                Reset & Start Again
+              </Button>
+            </Box>
+          )}
+        </ContentPaper>
+      </StyledContainer>
+    </ThemeProvider>
   );
 }; 
