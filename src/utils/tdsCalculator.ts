@@ -47,8 +47,8 @@ export const calculateTDS = (data: FinancialData): TDSResult => {
   // Calculate TDS ceiling in dollars
   const tdsCeiling = (totalMonthlyIncome * TDS_CEILING_PERCENTAGE) / 100;
   
-  // Check if TDS is within the acceptable limit (44%)
-  const isQualified = tdsRatio <= TDS_CEILING_PERCENTAGE;
+  // Check if both TDS and GDS are within the acceptable limits
+  const isQualified = tdsRatio <= TDS_CEILING_PERCENTAGE && gdsRatio <= GDS_CEILING_PERCENTAGE;
   
   // Calculate how much more income is needed or debt must be reduced
   const shortfall = isQualified 

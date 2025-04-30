@@ -11,10 +11,11 @@ import {
   Step,
   StepLabel,
   StepContent,
-  styled
+  styled,
+  Checkbox,
+  FormControlLabel
 } from '@mui/material';
 import { CurrencyInput } from './CurrencyInput';
-import { FormSection } from './FormSection';
 import { ResultsDisplay } from './ResultsDisplay';
 import { useTDSCalculator } from '../hooks/useTDSCalculator';
 
@@ -27,8 +28,12 @@ const StyledContainer = styled(Container)(({ theme }) => ({
 // Steps for the wizard
 const steps = [
   {
-    label: 'Mortgage & Property Details',
-    description: 'Enter information about your mortgage payment and property expenses.'
+    label: 'Mortgage Details',
+    description: 'Enter information about your mortgage.'
+  },
+  {
+    label: 'Property & Other Expenses',
+    description: 'Enter any other property-related expenses (if applicable).'
   },
   {
     label: 'Other Debts',
@@ -45,6 +50,7 @@ const steps = [
 ];
 
 export const TDSCalculatorForm: React.FC = () => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { 
     financialData, 
     result, 
@@ -56,6 +62,11 @@ export const TDSCalculatorForm: React.FC = () => {
 
   const [activeStep, setActiveStep] = useState(0);
   const [showMoreInfo, setShowMoreInfo] = useState(false);
+  
+  // State for optional fields
+  const [hasPropertyTax, setHasPropertyTax] = useState(false);
+  const [hasCondoFees, setHasCondoFees] = useState(false);
+  const [hasHomeInsurance, setHasHomeInsurance] = useState(false);
 
   const handleNext = () => {
     if (activeStep === steps.length - 2) {
@@ -73,9 +84,29 @@ export const TDSCalculatorForm: React.FC = () => {
     resetForm();
   };
 
+  // Handle checkbox changes for optional fields
+  const handleOptionalFieldChange = (field: string, checked: boolean) => {
+    // Reset the value when unchecked
+    if (!checked) {
+      handleInputChange(field as keyof typeof financialData, '0');
+    }
+    
+    switch(field) {
+      case 'propertyTax':
+        setHasPropertyTax(checked);
+        break;
+      case 'condoFees':
+        setHasCondoFees(checked);
+        break;
+      case 'homeInsurance':
+        setHasHomeInsurance(checked);
+        break;
+    }
+  };
+
   const renderStepContent = (step: number) => {
     switch (step) {
-      case 0:
+      case 0: // Mortgage Details
         return (
           <Box sx={{ mt: 2 }}>
             <Stack spacing={3}>
@@ -83,56 +114,25 @@ export const TDSCalculatorForm: React.FC = () => {
                 label="Monthly Mortgage Payment"
                 value={financialData.mortgagePayment}
                 onChange={(value) => handleInputChange('mortgagePayment', value)}
-                helperText="Principal and interest"
-                tooltipText="The amount you pay monthly for your mortgage (principal + interest)"
+                helperText="Principal and interest combined"
+                tooltipText="The total amount you pay monthly for your mortgage (principal + interest)"
+              />
+              
+              <CurrencyInput
+                label="Remaining Mortgage Balance"
+                value={financialData.mortgageRemaining || 0}
+                onChange={(value) => handleInputChange('mortgageRemaining', value)}
+                tooltipText="How much is left to pay on your mortgage"
               />
               
               {showMoreInfo && (
-                <>
-                  <CurrencyInput
-                    label="Mortgage Remaining Balance"
-                    value={financialData.mortgageRemaining || 0}
-                    onChange={(value) => handleInputChange('mortgageRemaining', value)}
-                    tooltipText="The remaining balance on your mortgage"
-                  />
-                  
-                  <CurrencyInput
-                    label="Mortgage Interest Rate (%)"
-                    value={financialData.mortgageInterestRate || 0}
-                    onChange={(value) => handleInputChange('mortgageInterestRate', value)}
-                    tooltipText="Your current mortgage interest rate"
-                  />
-                </>
+                <CurrencyInput
+                  label="Mortgage Interest Rate (%)"
+                  value={financialData.mortgageInterestRate || 0}
+                  onChange={(value) => handleInputChange('mortgageInterestRate', value)}
+                  tooltipText="Your current mortgage interest rate"
+                />
               )}
-              
-              <CurrencyInput
-                label="Monthly Property Tax"
-                value={financialData.propertyTax}
-                onChange={(value) => handleInputChange('propertyTax', value)}
-                tooltipText="Monthly property tax amount (divide annual amount by 12)"
-              />
-              
-              <CurrencyInput
-                label="Monthly Heating Costs"
-                value={financialData.heatingCosts}
-                onChange={(value) => handleInputChange('heatingCosts', value)}
-                tooltipText="Average monthly heating costs"
-              />
-              
-              <CurrencyInput
-                label="Monthly Condo Fees"
-                value={financialData.condoFees}
-                onChange={(value) => handleInputChange('condoFees', value)}
-                helperText="If applicable"
-                tooltipText="Monthly condo or strata fees if applicable"
-              />
-              
-              <CurrencyInput
-                label="Monthly Home Insurance"
-                value={financialData.homeInsurance}
-                onChange={(value) => handleInputChange('homeInsurance', value)}
-                tooltipText="Monthly home insurance premium"
-              />
               
               <Button 
                 variant="text" 
@@ -146,7 +146,95 @@ export const TDSCalculatorForm: React.FC = () => {
           </Box>
         );
       
-      case 1:
+      case 1: // Property & Other Expenses
+        return (
+          <Box sx={{ mt: 2 }}>
+            <Stack spacing={3}>
+              <Typography variant="body2" color="text.secondary">
+                These expenses are optional. Only check the ones that apply to you.
+              </Typography>
+              
+              <Box>
+                <FormControlLabel
+                  control={
+                    <Checkbox 
+                      checked={hasPropertyTax}
+                      onChange={(e) => handleOptionalFieldChange('propertyTax', e.target.checked)}
+                    />
+                  }
+                  label="I pay property tax"
+                />
+                
+                {hasPropertyTax && (
+                  <CurrencyInput
+                    label="Property Tax"
+                    value={financialData.propertyTax}
+                    onChange={(value) => handleInputChange('propertyTax', value)}
+                    tooltipText="Enter your property tax amount"
+                    helperText="The calculator will convert to monthly if you enter yearly"
+                    allowPeriodToggle={true}
+                  />
+                )}
+              </Box>
+              
+              <Box>
+                <FormControlLabel
+                  control={
+                    <Checkbox 
+                      checked={hasCondoFees}
+                      onChange={(e) => handleOptionalFieldChange('condoFees', e.target.checked)}
+                    />
+                  }
+                  label="I pay condo/strata fees"
+                />
+                
+                {hasCondoFees && (
+                  <CurrencyInput
+                    label="Condo/Strata Fees"
+                    value={financialData.condoFees}
+                    onChange={(value) => handleInputChange('condoFees', value)}
+                    tooltipText="Your maintenance fees for your property"
+                    allowPeriodToggle={true}
+                  />
+                )}
+              </Box>
+              
+              <Box>
+                <FormControlLabel
+                  control={
+                    <Checkbox 
+                      checked={hasHomeInsurance}
+                      onChange={(e) => handleOptionalFieldChange('homeInsurance', e.target.checked)}
+                    />
+                  }
+                  label="I pay home insurance"
+                />
+                
+                {hasHomeInsurance && (
+                  <CurrencyInput
+                    label="Home Insurance"
+                    value={financialData.homeInsurance}
+                    onChange={(value) => handleInputChange('homeInsurance', value)}
+                    tooltipText="Your home insurance premium"
+                    helperText="The calculator will convert to monthly if you enter yearly"
+                    allowPeriodToggle={true}
+                  />
+                )}
+              </Box>
+              
+              <CurrencyInput
+                label="Monthly Heating Costs"
+                value={financialData.heatingCosts}
+                onChange={(value) => handleInputChange('heatingCosts', value)}
+                tooltipText="Average monthly heating costs"
+                helperText="Estimate your average monthly heating costs"
+                allowPeriodToggle={true}
+              />
+            </Stack>
+          </Box>
+        );
+      
+      case 2: // Other Debts
         return (
           <Box sx={{ mt: 2 }}>
             <Stack spacing={3}>
@@ -162,7 +250,8 @@ export const TDSCalculatorForm: React.FC = () => {
                 label="Student Loans"
                 value={financialData.studentLoans}
                 onChange={(value) => handleInputChange('studentLoans', value)}
-                tooltipText="Monthly student loan payments"
+                tooltipText="Student loan payments"
+                allowPeriodToggle={true}
               />
               
               <CurrencyInput
@@ -179,37 +268,41 @@ export const TDSCalculatorForm: React.FC = () => {
                 onChange={(value) => handleInputChange('otherLoans', value)}
                 helperText="Personal loans, lines of credit, etc."
                 tooltipText="Monthly payments for any other loans or debts"
+                allowPeriodToggle={true}
               />
             </Stack>
           </Box>
         );
       
-      case 2:
+      case 3: // Income
         return (
           <Box sx={{ mt: 2 }}>
             <Stack spacing={3}>
               <CurrencyInput
-                label="Your Gross Monthly Income"
+                label="Your Gross Income"
                 value={financialData.grossIncomeMain}
                 onChange={(value) => handleInputChange('grossIncomeMain', value)}
                 helperText="Before tax and deductions"
-                tooltipText="Your monthly income before taxes and deductions"
+                tooltipText="Your income before taxes and deductions"
+                allowPeriodToggle={true}
               />
               
               <CurrencyInput
-                label="Spouse's Gross Monthly Income"
+                label="Spouse's Gross Income"
                 value={financialData.grossIncomeSpouse}
                 onChange={(value) => handleInputChange('grossIncomeSpouse', value)}
                 helperText="If applicable"
-                tooltipText="Your spouse's monthly income before taxes (if applicable)"
+                tooltipText="Your spouse's income before taxes (if applicable)"
+                allowPeriodToggle={true}
               />
               
               <CurrencyInput
                 label="Rental Income"
                 value={financialData.grossIncomeRental}
                 onChange={(value) => handleInputChange('grossIncomeRental', value)}
-                helperText="Gross monthly income from rental properties"
-                tooltipText="Monthly income from rental properties before expenses"
+                helperText="Gross income from rental properties"
+                tooltipText="Income from rental properties before expenses"
+                allowPeriodToggle={true}
               />
               
               <CurrencyInput
@@ -217,13 +310,14 @@ export const TDSCalculatorForm: React.FC = () => {
                 value={financialData.otherIncome}
                 onChange={(value) => handleInputChange('otherIncome', value)}
                 helperText="Investments, pensions, etc."
-                tooltipText="Any other regular monthly income sources"
+                tooltipText="Any other regular income sources"
+                allowPeriodToggle={true}
               />
             </Stack>
           </Box>
         );
       
-      case 3:
+      case 4: // Results
         return result && (
           <ResultsDisplay result={result} />
         );
